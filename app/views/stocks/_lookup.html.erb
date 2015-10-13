@@ -19,6 +19,20 @@
       <strong>Symbol:</strong> <%= @stock.ticker %>
       <strong>Name:</strong> <%= @stock.name %>
       <strong>Price:</strong> <%= @stock.price %>
+      <% if current_user.can_add_stock?(@stock.ticker) %>
+        <%= link_to "Add to my Stocks", user_stocks_path(user: current_user, stock_ticker: @stock.ticker,
+                stock_id: @stock.id ? @stock.id : ''), class: 'btn btn-xs btn-success', method: :post %>
+      <% else %>
+        <span class="label label-default">
+          Stock cannot be added because you have already added
+          <% if !current_user.under_stock_limit? %>
+          10 stocks
+          <% end %>
+          <% if current_user.stock_already_added?(@stock.ticker) %>
+          this stock
+          <% end %>
+        </span>
+      <% end %>
     </div>
   <% end %>
   <div id="stock-lookup-errors"></div>
